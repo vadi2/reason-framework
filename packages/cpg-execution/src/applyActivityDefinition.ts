@@ -108,8 +108,7 @@ export const applyActivityDefinition = async (
       id: uuidv4(),
       meta,
       resourceType,
-      status: 'draft',
-      doNotPerform //remove this? and add only where we want returned?
+      status: 'draft'
     }
 
     const canonicalActivityDefinition = canonicalize(activityDefinition)
@@ -198,6 +197,9 @@ export const applyActivityDefinition = async (
       if (subject != null) {
         targetResource.subject = referenceFromString(subject, 'Patient')
       }
+      if (doNotPerform != null) {
+        targetResource.doNotPerform = doNotPerform
+      }
     } else if (is.Contract(targetResource)) {
       if (practitioner != null) {
         targetResource.author = referenceFromString(
@@ -266,6 +268,15 @@ export const applyActivityDefinition = async (
           practitioner,
           'Practitioner'
         )
+      }
+      if (encounter != null) {
+        targetResource.encounter = referenceFromString(
+          encounter,
+          'Encounter'
+        )
+      }
+      if (doNotPerform != null) {
+        targetResource.doNotPerform = doNotPerform
       }
       if (productCodeableConcept != null) {
         targetResource.medicationCodeableConcept = productCodeableConcept
@@ -348,6 +359,12 @@ export const applyActivityDefinition = async (
           'Practitioner'
         )
       }
+      if (doNotPerform != null) {
+        targetResource.doNotPerform = doNotPerform
+      }
+      if (code != null) {
+        targetResource.code = code
+      }
       if (quantity != null) {
         targetResource.quantityQuantity = quantity
       }
@@ -426,6 +443,14 @@ export const applyActivityDefinition = async (
       }
       if (timingPeriod != null) {
         targetResource.executionPeriod = timingPeriod
+      }
+      if (doNotPerform != null && doNotPerform === true) {
+        targetResource.modifierExtension = [
+          {
+            url: "http://hl7.org/fhir/StructureDefinition/request-doNotPerform",
+            valueBoolean: true
+          }
+        ]
       }
     } else if (is.VisionPrescription(targetResource)) {
       if (subject != null) {
