@@ -439,7 +439,6 @@ export const evaluateCqlLibrary = async (
 
   const replaceReferences = (obj: any) => {
     if (obj == null) { return obj }
-    
     return Object.keys(obj).reduce((acc, key) => {
       let value = JSON.parse(JSON.stringify(obj[key]))
 
