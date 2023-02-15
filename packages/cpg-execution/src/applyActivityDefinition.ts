@@ -99,6 +99,7 @@ export const applyActivityDefinition = async (
     profile
   } = activityDefinition
 
+
   if (resourceType != null && is.RequestResourceType(resourceType)) {
     const meta: fhir4.Meta = {}
     if (profile != null) {
@@ -253,6 +254,24 @@ export const applyActivityDefinition = async (
     } else if (is.ImmunizationRecommendation(targetResource)) {
       if (subject != null) {
         targetResource.patient = referenceFromString(subject, 'Patient')
+      }
+      if (productCodeableConcept != null) {
+        targetResource.recommendation = [
+          {
+            vaccineCode: productCodeableConcept
+          },
+          {
+            forecastStatus: {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/immunization-recommendation-status",
+                  "code": "due",
+                  "display": "Due"
+                }
+              ]
+            }
+          }
+        ]
       }
     } else if (is.MedicationRequest(targetResource)) {
       if (canonicalActivityDefinition != null) {
