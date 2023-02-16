@@ -252,13 +252,9 @@ export const applyActivityDefinition = async (
         targetResource.patient = referenceFromString(subject, 'Patient')
       }
       if (productCodeableConcept != null) {
-        /*targetResource.recommendation = [
+        targetResource.recommendation = [
           {
-            vaccineCode: [
-              productCodeableConcept
-            ]
-          },
-          {
+            vaccineCode: [productCodeableConcept],
             forecastStatus: {
               "coding": [
                 {
@@ -270,7 +266,6 @@ export const applyActivityDefinition = async (
             }
           }
         ]
-        */
       }
     } else if (is.MedicationRequest(targetResource)) {
       if (canonicalActivityDefinition != null) {
