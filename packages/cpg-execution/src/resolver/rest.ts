@@ -80,14 +80,14 @@ class RestResolver extends BaseResolver implements Resolver {
       const resultResources = bundle.entry
         ?.map((entry) => entry.resource)
         .filter(is.FhirResource)
-      
+
       // For simplifier...
-      return resultResources?.filter(r => {
+      return resultResources?.filter((r) => {
         const patientReference = (r as any)?.patient?.reference
         if (patientReference) {
           return patientReference.endsWith(patient)
         }
-        
+
         const subjectReference = (r as any)?.subject?.reference
         if (subjectReference) {
           return subjectReference.endsWith(patient)

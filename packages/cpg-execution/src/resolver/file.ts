@@ -57,7 +57,7 @@ class FileResolver extends BaseResolver implements Resolver {
     const resources = this.resourcesByResourceType[resourceType]
     if (patientRef != null) {
       return resources?.filter((resource) => {
-        console.log("filtering", resource)
+        console.log('filtering', resource)
         const rawResource = JSON.parse(JSON.stringify(resource))
         const { subject, patient } = rawResource
         if (subject != null) {
@@ -69,7 +69,7 @@ class FileResolver extends BaseResolver implements Resolver {
         return true
       })
     } else {
-      return resources.filter(r => r != null)
+      return resources.filter((r) => r != null)
     }
   }
 

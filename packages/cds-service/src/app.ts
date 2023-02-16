@@ -12,11 +12,7 @@ import {
   ApplyPlanDefinitionArgs,
 } from '@reason-framework/cpg-execution'
 import Resolver from '@reason-framework/cpg-execution/lib/resolver'
-import {
-  inspect,
-  is,
-  notEmpty,
-} from '@reason-framework/cpg-execution/lib/helpers'
+import { is, notEmpty } from '@reason-framework/cpg-execution/lib/helpers'
 
 /**
  * The patient whose record was opened, including their encounter, if
@@ -326,18 +322,27 @@ export default async (options?: FastifyServerOptions) => {
                     suggestions = action.action
                       .map((subAction, subIndex) => {
                         let actions: CDSHooks.SystemAction[] = []
-                        const resource = others.find(o => subAction?.resource?.reference?.endsWith(o.id ?? ''))
+                        const resource = others.find((o) =>
+                          subAction?.resource?.reference?.endsWith(o.id ?? '')
+                        )
                         if (is.RequestGroup(resource)) {
-                          actions = resource.action?.map(targetAction => {
-                            const targetResource = others.find(o => targetAction?.resource?.reference?.endsWith(o.id ?? ''))
-                            if (targetResource != null) {
-                              return {
-                                type: targetAction.type?.coding?.[0]?.code,
-                                description: targetAction.description,
-                                resource: targetResource
-                              } as CDSHooks.SystemAction 
-                            }
-                          }).filter(notEmpty) ?? []
+                          actions =
+                            resource.action
+                              ?.map((targetAction) => {
+                                const targetResource = others.find((o) =>
+                                  targetAction?.resource?.reference?.endsWith(
+                                    o.id ?? ''
+                                  )
+                                )
+                                if (targetResource != null) {
+                                  return {
+                                    type: targetAction.type?.coding?.[0]?.code,
+                                    description: targetAction.description,
+                                    resource: targetResource,
+                                  } as CDSHooks.SystemAction
+                                }
+                              })
+                              .filter(notEmpty) ?? []
                         }
 
                         if (actions.length > 0) {
@@ -347,7 +352,6 @@ export default async (options?: FastifyServerOptions) => {
                             actions,
                           }
                         }
-
                       })
                       .filter(notEmpty)
                   }

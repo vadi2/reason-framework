@@ -99,7 +99,6 @@ export const applyActivityDefinition = async (
     profile
   } = activityDefinition
 
-
   if (resourceType != null && is.RequestResourceType(resourceType)) {
     const meta: fhir4.Meta = {}
     if (profile != null) {
@@ -126,7 +125,7 @@ export const applyActivityDefinition = async (
       // 3. Mapping AD.priority to App.priority
 
       if (timingPeriod != null) {
-        ; (targetResource.requestedPeriod ||= []).push(timingPeriod)
+        ;(targetResource.requestedPeriod ||= []).push(timingPeriod)
       }
       if (subject != null) {
         targetResource.participant = [
@@ -145,7 +144,7 @@ export const applyActivityDefinition = async (
       }
     } else if (is.CarePlan(targetResource)) {
       if (canonicalActivityDefinition != null) {
-        ; (targetResource.instantiatesCanonical ||= []).push(
+        ;(targetResource.instantiatesCanonical ||= []).push(
           canonicalActivityDefinition
         )
       }
@@ -162,7 +161,7 @@ export const applyActivityDefinition = async (
         )
       }
       if (organization != null) {
-        ; (targetResource.contributor ||= []).push(
+        ;(targetResource.contributor ||= []).push(
           referenceFromString(organization, 'Organization')
         )
       }
@@ -190,10 +189,7 @@ export const applyActivityDefinition = async (
         )
       }
       if (encounter != null) {
-        targetResource.encounter = referenceFromString(
-          encounter,
-          'Encounter'
-        )
+        targetResource.encounter = referenceFromString(encounter, 'Encounter')
       }
       if (subject != null) {
         targetResource.subject = referenceFromString(subject, 'Patient')
@@ -209,13 +205,13 @@ export const applyActivityDefinition = async (
         )
       }
       if (organization != null) {
-        ; (targetResource.authority ||= []).push(
+        ;(targetResource.authority ||= []).push(
           referenceFromString(organization, 'Organization')
         )
       }
     } else if (is.DeviceRequest(targetResource)) {
       if (canonicalActivityDefinition != null) {
-        ; (targetResource.instantiatesCanonical ||= []).push(
+        ;(targetResource.instantiatesCanonical ||= []).push(
           canonicalActivityDefinition
         )
       }
@@ -256,9 +252,11 @@ export const applyActivityDefinition = async (
         targetResource.patient = referenceFromString(subject, 'Patient')
       }
       if (productCodeableConcept != null) {
-        targetResource.recommendation = [
+        /*targetResource.recommendation = [
           {
-            vaccineCode: productCodeableConcept
+            vaccineCode: [
+              productCodeableConcept
+            ]
           },
           {
             forecastStatus: {
@@ -272,10 +270,11 @@ export const applyActivityDefinition = async (
             }
           }
         ]
+        */
       }
     } else if (is.MedicationRequest(targetResource)) {
       if (canonicalActivityDefinition != null) {
-        ; (targetResource.instantiatesCanonical ||= []).push(
+        ;(targetResource.instantiatesCanonical ||= []).push(
           canonicalActivityDefinition
         )
       }
@@ -289,10 +288,7 @@ export const applyActivityDefinition = async (
         )
       }
       if (encounter != null) {
-        targetResource.encounter = referenceFromString(
-          encounter,
-          'Encounter'
-        )
+        targetResource.encounter = referenceFromString(encounter, 'Encounter')
       }
       if (doNotPerform != null) {
         targetResource.doNotPerform = doNotPerform
@@ -304,7 +300,7 @@ export const applyActivityDefinition = async (
         targetResource.medicationReference = productReference
       }
       if (dosage != null) {
-        ; (targetResource.dosageInstruction ||= []).push(...dosage)
+        ;(targetResource.dosageInstruction ||= []).push(...dosage)
       }
 
       const newDosage: fhir4.Dosage = {}
@@ -313,17 +309,17 @@ export const applyActivityDefinition = async (
       // if (timingAge) {
       // }
       if (timingDateTime != null) {
-        ; ((newDosage.timing ||= {}).event ||= []).push(timingDateTime)
+        ;((newDosage.timing ||= {}).event ||= []).push(timingDateTime)
       }
       if (timingDuration != null) {
-        ; ((newDosage.timing ||= {}).repeat ||= {}).boundsDuration =
+        ;((newDosage.timing ||= {}).repeat ||= {}).boundsDuration =
           timingDuration
       }
       if (timingPeriod != null) {
-        ; ((newDosage.timing ||= {}).repeat ||= {}).boundsPeriod = timingPeriod
+        ;((newDosage.timing ||= {}).repeat ||= {}).boundsPeriod = timingPeriod
       }
       if (timingRange != null) {
-        ; ((newDosage.timing ||= {}).repeat ||= {}).boundsRange = timingRange
+        ;((newDosage.timing ||= {}).repeat ||= {}).boundsRange = timingRange
       }
       if (timingTiming != null) {
         newDosage.timing = timingTiming
@@ -341,10 +337,10 @@ export const applyActivityDefinition = async (
         newDosage.doseAndRate = [{ doseQuantity: quantity }]
       }
 
-      ; (targetResource.dosageInstruction ||= []).push(newDosage)
+      ;(targetResource.dosageInstruction ||= []).push(newDosage)
     } else if (is.NutritionOrder(targetResource)) {
       if (canonicalActivityDefinition != null) {
-        ; (targetResource.instantiatesCanonical ||= []).push(
+        ;(targetResource.instantiatesCanonical ||= []).push(
           canonicalActivityDefinition
         )
       }
@@ -362,7 +358,7 @@ export const applyActivityDefinition = async (
       }
     } else if (is.ServiceRequest(targetResource)) {
       if (canonicalActivityDefinition != null) {
-        ; (targetResource.instantiatesCanonical ||= []).push(
+        ;(targetResource.instantiatesCanonical ||= []).push(
           canonicalActivityDefinition
         )
       }
@@ -466,7 +462,7 @@ export const applyActivityDefinition = async (
       if (doNotPerform != null && doNotPerform === true) {
         targetResource.modifierExtension = [
           {
-            url: "http://hl7.org/fhir/StructureDefinition/request-doNotPerform",
+            url: 'http://hl7.org/fhir/StructureDefinition/request-doNotPerform',
             valueBoolean: true
           }
         ]

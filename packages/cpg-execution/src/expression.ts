@@ -223,6 +223,13 @@ export const buildDataContext = async (
     )
     ;(context.entry ||= []).push({ resource: organizationResource })
   }
+  // De-dupe context...
+  const resources = context.entry?.map((e) => e.resource) ?? []
+  context.entry = resources
+    .filter((v, i) => resources.indexOf(v) === i)
+    .map((r) => {
+      return { resource: r }
+    })
   return context
 }
 
@@ -253,7 +260,7 @@ export const evaluateCqlExpression = async (
     throw new Error(
       `should be one and only one patient in dataContext, found ${
         patients?.length ?? 0
-      } -- ${inspect(dataContext)}`
+      } -- ${inspect(patients)}`
     )
   }
 
@@ -438,7 +445,9 @@ export const evaluateCqlLibrary = async (
   }
 
   const replaceReferences = (obj: any) => {
-    if (obj == null) { return obj }
+    if (obj == null) {
+      return obj
+    }
     return Object.keys(obj).reduce((acc, key) => {
       let value = JSON.parse(JSON.stringify(obj[key]))
 
@@ -467,6 +476,7 @@ export const evaluateCqlLibrary = async (
     const elmJson = Buffer.from(elmEncoded?.data ?? '', 'base64').toString(
       'utf-8'
     )
+
     const allDataRequirements = (
       await getDataRequirements(JSON.parse(elmJson), contentResolver)
     ).filter(notEmpty)
@@ -509,6 +519,7 @@ export const evaluateCqlLibrary = async (
     const libraryElm = JSON.parse(elmJson)
     const lib = new cql.Library(libraryElm, repository)
     const executor = new cql.Executor(lib, terminologyResolver)
+
     if (is.Bundle(dataContext)) {
       patientSource.loadBundles([dataContext])
     }

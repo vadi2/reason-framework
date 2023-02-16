@@ -46,7 +46,6 @@ const isApplicable = async (
     return true
   }
 
-
   const applicabilities = await Promise.all(
     applicabilityConditions.flatMap(async (condition) => {
       const { expression } = condition
@@ -75,7 +74,7 @@ const isApplicable = async (
       }
     })
   )
-  
+
   if (applicabilities.every((a) => typeof a === 'boolean')) {
     return applicabilities.every((a) => a === true)
   } else {
@@ -255,18 +254,18 @@ export const applyPlanDefinitionAction = async (
       }
 
       appliedResource = await applyActivityDefinition(activityDefinitionArgs)
-      
+
       if (is.RequestResource(appliedResource)) {
         requestGroupAction.type = {
           coding: [
-            { 
+            {
               system: 'http://terminology.hl7.org/CodeSystem/action-type',
               code: 'create'
             }
           ]
         }
       }
-      
+
       // Apply any dynamicValues from the PD now
       if (
         is.RequestResource(appliedResource) ||
@@ -299,16 +298,20 @@ export const applyPlanDefinitionAction = async (
         planDefinitionArgs,
         resourceBundle
       )
-      
+
       const subRequestGroup = appliedBundle?.entry?.shift()
       if (is.RequestGroup(subRequestGroup?.resource)) {
-        if (subRequestGroup?.resource?.action?.every(a => a.resource != null)) {
+        if (
+          subRequestGroup?.resource?.action?.every((a) => a.resource != null)
+        ) {
           appliedResource = subRequestGroup?.resource
         }
       } else {
-        throw new Error("Problem processing sub PlanDefinition, missing requestGroup." + inspect(subRequestGroup))
+        throw new Error(
+          'Problem processing sub PlanDefinition, missing requestGroup.' +
+            inspect(subRequestGroup)
+        )
       }
-      
     } else if (is.Questionnaire(definitionResource)) {
       appliedResource = definitionResource
     } else {
@@ -359,7 +362,10 @@ export const applyPlanDefinitionAction = async (
   }
 
   // Return the action and resourceBundle
-  if (requestGroupAction.resource != null || requestGroupAction?.action != null) {
+  if (
+    requestGroupAction.resource != null ||
+    requestGroupAction?.action != null
+  ) {
     return {
       action: requestGroupAction,
       resourceBundle
