@@ -38,23 +38,22 @@ export const processDynamicValue = async (
   }
 
   if (expression.language === 'text/fhirpath') {
-    const subjectResource = resolveBundleOrEndpoint(subject, data, dataResolver)
-    const encounterResource = resolveBundleOrEndpoint(
+    const subjectResource = await resolveBundleOrEndpoint(subject, data, dataResolver)
+    const encounterResource = await resolveBundleOrEndpoint(
       encounter,
       data,
       dataResolver
     )
-    const practitionerResource = resolveBundleOrEndpoint(
+    const practitionerResource = await resolveBundleOrEndpoint(
       practitioner,
       data,
       dataResolver
     )
-    const organizationResource = resolveBundleOrEndpoint(
+    const organizationResource = await resolveBundleOrEndpoint(
       organization,
       data,
       dataResolver
     )
-
     const result = evaluateFhirpath(
       expression.expression ?? '',
       definitionalResource,

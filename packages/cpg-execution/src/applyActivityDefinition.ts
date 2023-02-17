@@ -267,6 +267,8 @@ export const applyActivityDefinition = async (
           }
         ]
       }
+      const date = new Date()
+      targetResource.date = date.toISOString()
     } else if (is.MedicationRequest(targetResource)) {
       if (canonicalActivityDefinition != null) {
         ;(targetResource.instantiatesCanonical ||= []).push(
