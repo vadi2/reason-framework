@@ -26,14 +26,14 @@ import {
 
 const isApplicable = async (
   patientRef: string,
-  planDefinintionAction: fhir4.PlanDefinitionAction,
+  planDefinitionAction: fhir4.PlanDefinitionAction,
   contentResolver: Resolver,
   terminologyResolver: Resolver,
   dataResolver: Resolver | undefined,
   dataContext: fhir4.Bundle,
   libraries?: fhir4.Library[] | undefined
 ): Promise<boolean> => {
-  const { condition } = planDefinintionAction
+  const { condition } = planDefinitionAction
   const applicabilityConditions = condition?.filter(
     (c) => c.kind === 'applicability'
   )
@@ -84,9 +84,9 @@ const isApplicable = async (
 }
 
 const isAtomic = (
-  planDefinintionAction: fhir4.PlanDefinitionAction
+  planDefinitionAction: fhir4.PlanDefinitionAction
 ): boolean => {
-  return planDefinintionAction?.action == null
+  return planDefinitionAction?.action == null
 }
 
 /**
@@ -241,7 +241,7 @@ export const applyPlanDefinitionAction = async (
   if (definitionCanonical != null) {
     const definitionResource = await contentResolver.resolveCanonical(
       definitionCanonical,
-      ['ActivityDefinition', 'PlanDefinition', 'Questionnare']
+      ['ActivityDefinition', 'PlanDefinition', 'Questionnaire']
     )
 
     let appliedResource: RequestResource | fhir4.Questionnaire | undefined
@@ -288,24 +288,25 @@ export const applyPlanDefinitionAction = async (
           )
         )
       }
-    } else if (is.PlanDefinition(definitionResource)) {
+    } else if (is.PlanDefinition(definitionResource)) {   // if the PD action is a plan Definition
       const planDefinitionArgs: ApplyPlanDefinitionArgs = {
         ...args,
         planDefinition: definitionResource
       }
 
-      appliedBundle = await applyPlanDefinition(
+      appliedBundle = await applyPlanDefinition(     //the applied bundle = entry with followuplan RQ and entry CKDeducation RQ
         planDefinitionArgs,
         resourceBundle
       )
 
-      const subRequestGroup = appliedBundle?.entry?.shift()
+      const subRequestGroup = appliedBundle?.entry?.shift()  //subRQ = one entry from the bundle
       if (is.RequestGroup(subRequestGroup?.resource)) {
         if (
-          subRequestGroup?.resource?.action?.every((a) => a.resource != null)
+          subRequestGroup?.resource?.action?.every((a) => a.resource != null) //if the action has a resource -- PDs and ADs for subrequestgroups do not have nested resources so this evaluates false
         ) {
           appliedResource = subRequestGroup?.resource
         }
+        appliedResource = subRequestGroup?.resource
       } else {
         throw new Error(
           'Problem processing sub PlanDefinition, missing requestGroup.' +
@@ -363,8 +364,7 @@ export const applyPlanDefinitionAction = async (
 
   // Return the action and resourceBundle
   if (
-    requestGroupAction.resource != null ||
-    requestGroupAction?.action != null
+    requestGroupAction != null
   ) {
     return {
       action: requestGroupAction,
